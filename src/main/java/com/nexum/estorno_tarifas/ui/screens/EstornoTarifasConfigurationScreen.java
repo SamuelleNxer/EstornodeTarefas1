@@ -37,6 +37,7 @@ public class EstornoTarifasConfigurationScreen extends JDialog {
     private final JSpinner primeiroDiaUtil = new JSpinner(new SpinnerNumberModel(1, 1, 31, 1));
     private final JSpinner ultimoDiaUtil = new JSpinner(new SpinnerNumberModel(5, 1, 31, 1));
     private final JTextField caminhoPlanilha = new JTextField(30);
+    private final JTextField executavelSisbr = new JTextField(30);
     private final JTextField moduloSisbr = new JTextField(20);
     private final JTextField menuSisbr = new JTextField(20);
     private final JTextField submenuSisbr = new JTextField(20);
@@ -93,6 +94,12 @@ public class EstornoTarifasConfigurationScreen extends JDialog {
         row = field(panel, constraints, row, "Planilha XLSX", filePanel);
 
         row = section(panel, constraints, row, "Navegacao no SISBR");
+        JPanel sisbrFilePanel = new JPanel(new BorderLayout(6, 0));
+        sisbrFilePanel.add(executavelSisbr, BorderLayout.CENTER);
+        JButton browseSisbr = new JButton("Selecionar...");
+        browseSisbr.addActionListener(event -> selectSisbrExecutable());
+        sisbrFilePanel.add(browseSisbr, BorderLayout.EAST);
+        row = field(panel, constraints, row, "Executavel do SISBR", sisbrFilePanel);
         row = field(panel, constraints, row, "Modulo", moduloSisbr);
         row = field(panel, constraints, row, "Menu", menuSisbr);
         row = field(panel, constraints, row, "Submenu", submenuSisbr);
@@ -138,6 +145,7 @@ public class EstornoTarifasConfigurationScreen extends JDialog {
         primeiroDiaUtil.setValue(configuration.primeiroDiaUtil());
         ultimoDiaUtil.setValue(configuration.ultimoDiaUtil());
         caminhoPlanilha.setText(configuration.caminhoPlanilha());
+        executavelSisbr.setText(configuration.executavelSisbr());
         moduloSisbr.setText(configuration.moduloSisbr());
         menuSisbr.setText(configuration.menuSisbr());
         submenuSisbr.setText(configuration.submenuSisbr());
@@ -168,7 +176,8 @@ public class EstornoTarifasConfigurationScreen extends JDialog {
         EstornoTarifasConfiguration configuration = new EstornoTarifasConfiguration(
                 required(cooperativa), loginManual.isSelected(), usuarioSisbr.getText().trim(),
                 new String(senhaSisbr.getPassword()), schedulerHabilitado.isSelected(), firstDay, lastDay,
-                caminhoPlanilha.getText().trim(), required(moduloSisbr), menuSisbr.getText().trim(),
+                caminhoPlanilha.getText().trim(), executavelSisbr.getText().trim(), required(moduloSisbr),
+                menuSisbr.getText().trim(),
                 submenuSisbr.getText().trim(), required(rotinaSisbr), required(documentoPadrao),
                 usarDataAtual.isSelected(), marcarEstornoTarifa.isSelected());
         try {
@@ -188,6 +197,15 @@ public class EstornoTarifasConfigurationScreen extends JDialog {
         chooser.setFileFilter(new FileNameExtensionFilter("Planilhas Excel (*.xlsx)", "xlsx"));
         if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
             caminhoPlanilha.setText(chooser.getSelectedFile().getAbsolutePath());
+        }
+    }
+
+    private void selectSisbrExecutable() {
+        JFileChooser chooser = new JFileChooser();
+        chooser.setDialogTitle("Selecionar executavel do SISBR");
+        chooser.setFileFilter(new FileNameExtensionFilter("Aplicativos Windows (*.exe)", "exe"));
+        if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+            executavelSisbr.setText(chooser.getSelectedFile().getAbsolutePath());
         }
     }
 

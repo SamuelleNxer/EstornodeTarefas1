@@ -24,6 +24,7 @@ class EstornoTarifasConfigurationStoreTest {
         assertEquals("5042", configuration.cooperativa());
         assertEquals(1, configuration.primeiroDiaUtil());
         assertEquals(5, configuration.ultimoDiaUtil());
+        assertEquals("", configuration.executavelSisbr());
         assertEquals("Conta Corrente", configuration.moduloSisbr());
         assertEquals("1", configuration.documentoPadrao());
         assertTrue(configuration.usarDataAtual());
@@ -36,7 +37,8 @@ class EstornoTarifasConfigurationStoreTest {
                 temporaryDirectory.resolve("configuration.properties"));
         EstornoTarifasConfiguration expected = new EstornoTarifasConfiguration(
                 "9999", false, "robo", "segredo", false, 2, 4,
-                "C:\\bases\\estornos.xlsx", "Modulo", "Menu", "Submenu", "Rotina",
+                "C:\\bases\\estornos.xlsx", "C:\\Sisbr\\Sisbr.exe",
+                "Modulo", "Menu", "Submenu", "Rotina",
                 "7", false, false);
 
         store.save(expected);

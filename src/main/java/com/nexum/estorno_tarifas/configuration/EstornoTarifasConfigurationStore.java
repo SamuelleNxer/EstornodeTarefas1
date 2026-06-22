@@ -43,6 +43,7 @@ public class EstornoTarifasConfigurationStore {
                 integer(properties, "execucao.primeiro-dia-util", defaults.primeiroDiaUtil()),
                 integer(properties, "execucao.ultimo-dia-util", defaults.ultimoDiaUtil()),
                 value(properties, "planilha.caminho", defaults.caminhoPlanilha()),
+                value(properties, "sisbr.executavel", defaults.executavelSisbr()),
                 value(properties, "sisbr.modulo", defaults.moduloSisbr()),
                 value(properties, "sisbr.menu", defaults.menuSisbr()),
                 value(properties, "sisbr.submenu", defaults.submenuSisbr()),
@@ -70,6 +71,7 @@ public class EstornoTarifasConfigurationStore {
             write(writer, "execucao.primeiro-dia-util", configuration.primeiroDiaUtil());
             write(writer, "execucao.ultimo-dia-util", configuration.ultimoDiaUtil());
             write(writer, "planilha.caminho", configuration.caminhoPlanilha());
+            write(writer, "sisbr.executavel", configuration.executavelSisbr());
             write(writer, "sisbr.modulo", configuration.moduloSisbr());
             write(writer, "sisbr.menu", configuration.menuSisbr());
             write(writer, "sisbr.submenu", configuration.submenuSisbr());
