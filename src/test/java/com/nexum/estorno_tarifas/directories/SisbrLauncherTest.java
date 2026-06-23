@@ -58,4 +58,10 @@ class SisbrLauncherTest {
 
         assertTrue(exception.getMessage().contains("nao uma URL da internet"));
     }
+
+    @Test
+    void normalizesWindowsPathLikeFollowUp() {
+        assertEquals("C:\\Sisbr\\Sisbr.exe", SisbrLauncher.normalizeExecutablePath("\"C:/Sisbr/Sisbr.exe\""));
+        assertEquals("C:\\Sisbr\\Sisbr.exe", SisbrLauncher.normalizeExecutablePath("C:Sisbr\\Sisbr.exe"));
+    }
 }

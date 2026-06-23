@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.List;
@@ -23,13 +24,14 @@ public final class SisbrLauncher {
     }
 
     static Path resolveExecutable(String executableDirectory) throws IOException {
-        String configuredPath = normalizeInput(executableDirectory);
+        String configuredPath = stripQuotes(executableDirectory);
         if (configuredPath.isBlank()) {
             throw new IOException(
                     "Caminho do SISBR nao configurado. Abra Configuracoes e selecione o executavel.");
         }
 
-        if (configuredPath.startsWith("http://") || configuredPath.startsWith("https://")) {
+        String lowerPath = configuredPath.toLowerCase();
+        if (lowerPath.startsWith("http://") || lowerPath.startsWith("https://")) {
             throw new IOException("Informe o caminho do arquivo do SISBR no computador, nao uma URL da internet.");
         }
 
@@ -46,7 +48,20 @@ public final class SisbrLauncher {
         return executable;
     }
 
-    private static String normalizeInput(String executableDirectory) {
+    public static String normalizeExecutablePath(String executableDirectory) {
+        String text = stripQuotes(executableDirectory);
+        if (text.toLowerCase().startsWith("file:")) {
+            return text;
+        }
+        text = text.replace('/', '\\');
+        text = text.replaceAll("\\\\{2,}", "\\\\");
+        if (text.matches("^[A-Za-z]:[^\\\\].*")) {
+            text = text.substring(0, 2) + "\\" + text.substring(2);
+        }
+        return text;
+    }
+
+    private static String stripQuotes(String executableDirectory) {
         if (executableDirectory == null) {
             return "";
         }
@@ -59,8 +74,12 @@ public final class SisbrLauncher {
     }
 
     private static Path toPath(String configuredPath) throws IOException {
-        if (!configuredPath.startsWith("file:")) {
-            return Path.of(configuredPath);
+        if (!configuredPath.toLowerCase().startsWith("file:")) {
+            try {
+                return Path.of(normalizeExecutablePath(configuredPath));
+            } catch (InvalidPathException exception) {
+                throw new IOException("Caminho invalido para o SISBR: " + configuredPath, exception);
+            }
         }
         try {
             return Path.of(new URI(configuredPath));

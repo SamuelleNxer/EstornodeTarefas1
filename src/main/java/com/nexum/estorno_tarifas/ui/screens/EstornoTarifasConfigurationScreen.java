@@ -2,6 +2,7 @@ package com.nexum.estorno_tarifas.ui.screens;
 
 import com.nexum.estorno_tarifas.configuration.EstornoTarifasConfiguration;
 import com.nexum.estorno_tarifas.configuration.EstornoTarifasConfigurationStore;
+import com.nexum.estorno_tarifas.directories.SisbrLauncher;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -194,7 +195,7 @@ public class EstornoTarifasConfigurationScreen extends JDialog {
         schedulerHabilitado.setSelected(configuration.schedulerHabilitado());
         janelaAgendamento.setText(configuration.primeiroDiaUtil() + "-" + configuration.ultimoDiaUtil());
         caminhoPlanilha.setText(configuration.caminhoPlanilha());
-        executavelSisbr.setText(configuration.executavelSisbr());
+        executavelSisbr.setText(SisbrLauncher.normalizeExecutablePath(configuration.executavelSisbr()));
         moduloSisbr.setText(configuration.moduloSisbr());
         menuSisbr.setText(configuration.menuSisbr());
         submenuSisbr.setText(configuration.submenuSisbr());
@@ -232,7 +233,8 @@ public class EstornoTarifasConfigurationScreen extends JDialog {
                 new String(senhaSisbr.getPassword()), usuarioNxCoop.getText().trim(),
                 new String(senhaNxCoop.getPassword()), nxCoopApiUrl.getText().trim(),
                 schedulerHabilitado.isSelected(), firstDay, lastDay,
-                caminhoPlanilha.getText().trim(), executavelSisbr.getText().trim(), required(moduloSisbr),
+                caminhoPlanilha.getText().trim(), SisbrLauncher.normalizeExecutablePath(executavelSisbr.getText()),
+                required(moduloSisbr),
                 menuSisbr.getText().trim(),
                 submenuSisbr.getText().trim(), required(rotinaSisbr), required(documentoPadrao),
                 usarDataAtual.isSelected(), marcarEstornoTarifa.isSelected());

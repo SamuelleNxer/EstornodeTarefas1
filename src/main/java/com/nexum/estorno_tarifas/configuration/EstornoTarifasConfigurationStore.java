@@ -1,5 +1,6 @@
 package com.nexum.estorno_tarifas.configuration;
 
+import com.nexum.estorno_tarifas.directories.SisbrLauncher;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -33,6 +34,8 @@ public class EstornoTarifasConfigurationStore {
         try (BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
             properties.load(reader);
         }
+        String sisbrExecutable = rawValue("sisbr.executavel",
+                value(properties, "sisbr.executavel", defaults.executavelSisbr()));
 
         return new EstornoTarifasConfiguration(
                 value(properties, "cooperativa", defaults.cooperativa()),
@@ -46,7 +49,7 @@ public class EstornoTarifasConfigurationStore {
                 integer(properties, "execucao.primeiro-dia-util", defaults.primeiroDiaUtil()),
                 integer(properties, "execucao.ultimo-dia-util", defaults.ultimoDiaUtil()),
                 value(properties, "planilha.caminho", defaults.caminhoPlanilha()),
-                value(properties, "sisbr.executavel", defaults.executavelSisbr()),
+                SisbrLauncher.normalizeExecutablePath(sisbrExecutable),
                 value(properties, "sisbr.modulo", defaults.moduloSisbr()),
                 value(properties, "sisbr.menu", defaults.menuSisbr()),
                 value(properties, "sisbr.submenu", defaults.submenuSisbr()),
@@ -77,7 +80,8 @@ public class EstornoTarifasConfigurationStore {
             write(writer, "execucao.primeiro-dia-util", configuration.primeiroDiaUtil());
             write(writer, "execucao.ultimo-dia-util", configuration.ultimoDiaUtil());
             write(writer, "planilha.caminho", configuration.caminhoPlanilha());
-            write(writer, "sisbr.executavel", configuration.executavelSisbr());
+            writeLiteral(writer, "sisbr.executavel",
+                    SisbrLauncher.normalizeExecutablePath(configuration.executavelSisbr()));
             write(writer, "sisbr.modulo", configuration.moduloSisbr());
             write(writer, "sisbr.menu", configuration.menuSisbr());
             write(writer, "sisbr.submenu", configuration.submenuSisbr());
@@ -120,7 +124,46 @@ public class EstornoTarifasConfigurationStore {
         writer.newLine();
     }
 
+    private static void writeLiteral(BufferedWriter writer, String key, Object value) throws IOException {
+        String text = value == null ? "" : value.toString();
+        writer.write(key + "=" + text.replace("\n", "\\n").replace("\r", ""));
+        writer.newLine();
+    }
+
     private static String escape(String value) {
         return value.replace("\\", "\\\\").replace("\n", "\\n").replace("\r", "");
+    }
+
+    private String rawValue(String key, String defaultValue) throws IOException {
+        try (BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String trimmed = line.trim();
+                if (trimmed.isEmpty() || trimmed.startsWith("#") || trimmed.startsWith("!")) {
+                    continue;
+                }
+                int separator = separatorIndex(line);
+                if (separator < 0) {
+                    continue;
+                }
+                String currentKey = line.substring(0, separator).trim();
+                if (key.equals(currentKey)) {
+                    return line.substring(separator + 1).trim();
+                }
+            }
+        }
+        return defaultValue;
+    }
+
+    private static int separatorIndex(String line) {
+        int equals = line.indexOf('=');
+        int colon = line.indexOf(':');
+        if (equals < 0) {
+            return colon;
+        }
+        if (colon < 0) {
+            return equals;
+        }
+        return Math.min(equals, colon);
     }
 }

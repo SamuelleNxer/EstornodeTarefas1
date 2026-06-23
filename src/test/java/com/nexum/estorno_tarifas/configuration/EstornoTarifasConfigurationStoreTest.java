@@ -53,5 +53,21 @@ class EstornoTarifasConfigurationStoreTest {
         assertTrue(!persisted.contains("senha.sisbr=segredo"));
         assertTrue(persisted.contains("senha.nxcoop=dpapi:"));
         assertTrue(!persisted.contains("senha.nxcoop=nx-secret"));
+        assertTrue(persisted.contains("sisbr.executavel=C:\\Sisbr\\Sisbr.exe"));
+        assertTrue(!persisted.contains("sisbr.executavel=C:\\\\Sisbr\\\\Sisbr.exe"));
+    }
+
+    @Test
+    void loadsLiteralSisbrPathWithoutDroppingBackslashes() throws Exception {
+        Path file = temporaryDirectory.resolve("configuration.properties");
+        Files.writeString(file, """
+                cooperativa=5042
+                sisbr.executavel=C:\\Sisbr\\Sisbr 2.0.exe
+                """);
+        EstornoTarifasConfigurationStore store = new EstornoTarifasConfigurationStore(file);
+
+        EstornoTarifasConfiguration configuration = store.load();
+
+        assertEquals("C:\\Sisbr\\Sisbr 2.0.exe", configuration.executavelSisbr());
     }
 }
