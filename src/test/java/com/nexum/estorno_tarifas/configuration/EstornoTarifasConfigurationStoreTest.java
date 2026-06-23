@@ -22,6 +22,9 @@ class EstornoTarifasConfigurationStoreTest {
 
         assertTrue(file.toFile().isFile());
         assertEquals("5042", configuration.cooperativa());
+        assertEquals("", configuration.usuarioNxCoop());
+        assertEquals("", configuration.senhaNxCoop());
+        assertEquals("", configuration.nxCoopApiUrl());
         assertEquals(1, configuration.primeiroDiaUtil());
         assertEquals(5, configuration.ultimoDiaUtil());
         assertEquals("", configuration.executavelSisbr());
@@ -36,7 +39,8 @@ class EstornoTarifasConfigurationStoreTest {
         EstornoTarifasConfigurationStore store = new EstornoTarifasConfigurationStore(
                 temporaryDirectory.resolve("configuration.properties"));
         EstornoTarifasConfiguration expected = new EstornoTarifasConfiguration(
-                "9999", false, "robo", "segredo", false, 2, 4,
+                "9999", false, "robo", "segredo", "nx-user", "nx-secret",
+                "https://nxcoop.example/api", false, 2, 4,
                 "C:\\bases\\estornos.xlsx", "C:\\Sisbr\\Sisbr.exe",
                 "Modulo", "Menu", "Submenu", "Rotina",
                 "7", false, false);
@@ -47,5 +51,7 @@ class EstornoTarifasConfigurationStoreTest {
         String persisted = Files.readString(store.getPath());
         assertTrue(persisted.contains("senha.sisbr=dpapi:"));
         assertTrue(!persisted.contains("senha.sisbr=segredo"));
+        assertTrue(persisted.contains("senha.nxcoop=dpapi:"));
+        assertTrue(!persisted.contains("senha.nxcoop=nx-secret"));
     }
 }

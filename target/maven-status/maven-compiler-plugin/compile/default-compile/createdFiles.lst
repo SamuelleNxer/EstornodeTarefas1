@@ -1,4 +1,10 @@
+com\nexum\estorno_tarifas\directories\SisbrLauncher.class
+com\nexum\estorno_tarifas\configuration\EstornoTarifasConfiguration.class
+com\nexum\estorno_tarifas\ui\screens\EstornoTarifasConfigurationScreen.class
+com\nexum\estorno_tarifas\configuration\EstornoTarifasConfigurationStore.class
+com\nexum\estorno_tarifas\directories\Directories.class
 com\nexum\estorno_tarifas\ui\screens\EstornoTarifasMainScreen$1.class
 com\nexum\estorno_tarifas\EstornoTarifasApp.class
+com\nexum\estorno_tarifas\configuration\WindowsCredentialProtector.class
 com\nexum\estorno_tarifas\ui\screens\EstornoTarifasMainScreen.class
 com\nexum\estorno_tarifas\ui\outputstream\TextAreaOutputStream.class

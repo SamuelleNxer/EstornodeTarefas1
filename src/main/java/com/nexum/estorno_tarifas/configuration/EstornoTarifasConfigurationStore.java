@@ -39,6 +39,9 @@ public class EstornoTarifasConfigurationStore {
                 bool(properties, "login.manual", defaults.loginManual()),
                 value(properties, "usuario.sisbr", defaults.usuarioSisbr()),
                 WindowsCredentialProtector.unprotect(value(properties, "senha.sisbr", defaults.senhaSisbr())),
+                value(properties, "usuario.nxcoop", defaults.usuarioNxCoop()),
+                WindowsCredentialProtector.unprotect(value(properties, "senha.nxcoop", defaults.senhaNxCoop())),
+                value(properties, "nxcoop.api-url", defaults.nxCoopApiUrl()),
                 bool(properties, "scheduler.habilitado", defaults.schedulerHabilitado()),
                 integer(properties, "execucao.primeiro-dia-util", defaults.primeiroDiaUtil()),
                 integer(properties, "execucao.ultimo-dia-util", defaults.ultimoDiaUtil()),
@@ -67,6 +70,9 @@ public class EstornoTarifasConfigurationStore {
             write(writer, "login.manual", configuration.loginManual());
             write(writer, "usuario.sisbr", configuration.usuarioSisbr());
             write(writer, "senha.sisbr", WindowsCredentialProtector.protect(configuration.senhaSisbr()));
+            write(writer, "usuario.nxcoop", configuration.usuarioNxCoop());
+            write(writer, "senha.nxcoop", WindowsCredentialProtector.protect(configuration.senhaNxCoop()));
+            write(writer, "nxcoop.api-url", configuration.nxCoopApiUrl());
             write(writer, "scheduler.habilitado", configuration.schedulerHabilitado());
             write(writer, "execucao.primeiro-dia-util", configuration.primeiroDiaUtil());
             write(writer, "execucao.ultimo-dia-util", configuration.ultimoDiaUtil());
