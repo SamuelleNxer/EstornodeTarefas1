@@ -1,5 +1,7 @@
 package com.nexum.estorno_tarifas;
 
+import com.nexum.estorno_tarifas.directories.Directories;
+import com.nexum.estorno_tarifas.directories.SisbrLauncher;
 import com.nexum.estorno_tarifas.ui.screens.EstornoTarifasMainScreen;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -41,6 +43,9 @@ public class EstornoTarifasApp {
 
         executor.submit(() -> {
             try {
+                Directories.reload();
+                SisbrLauncher.open(Directories.SISBR_EXECUTABLE_DIRECTORY);
+
                 SpringApplication application = new SpringApplication(EstornoTarifasApp.class);
                 application.setWebApplicationType(WebApplicationType.NONE);
                 context = application.run();
